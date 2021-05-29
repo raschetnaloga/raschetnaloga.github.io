@@ -12,15 +12,108 @@
 <body>
 
 <main>
-    <div class="px-4 py-5 my-5 text-center">
-        <div class="container">
-            <div class="jumbotron alert-danger">
-                <h1>Здесь будет налоговый калькулятор</h1>
+    <div class="d-flex justify-content-between align-items-center">
+        <div class="p-2">
+            <h3>Расчёт выплат в государственные органы при фиксированной ежемесячной оплате труда</h3>
+        </div>
+        <div class="p-2">
+            <span class="text-secondary">бета</span>
+        </div>
+    </div>
+
+    <form class="needs-validation" novalidate>
+        <div class="mb-3">
+            <label class="form-label" for="official_salary">Сумма официальной зарплаты (р.)</label>
+            <input class="form-control" type="number" id="official_salary" min="1" value="0" onkeyup="onOfficialSalaryChange()">
+            <div class="invalid-feedback">
+                Введите число больше 0
             </div>
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="revenue">Реальный доход (р.)</label>
+            <input class="form-control" type="number" id="revenue" min="1" value="0" onkeyup="onRevenueChange()">
+            <div class="invalid-feedback">
+                Введите число больше 0
+            </div>
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="period_number">Период</label>
+            <div class="row">
+                <div class="col-sm-2">
+                    <input class="form-control" type="number" id="period_number" value="1" onkeyup="onPeriodChange()">
+                </div>
+                <div class="col-sm-5">
+                    <select class="form-select" id="period_type" onchange="onPeriodChange()">
+                        <option value="month" selected>Месяц</option>
+                        <option value="year">Год</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </form>
+    <div class="card">
+        <div class="card-body">
+            Официальная зарплата: <span id="total_official_salary"></span><br>
+            Реальный доход: <span id="total_revenue"></span><br>
+            Сумма подоходного налога (НДФЛ): <span id="total_ndfl_tax"></span><br>
+            Взносы ОПС: <span id="total_ops_tax"></span><br>
+            Взносы ОМС: <span id="total_oms_tax"></span><br>
+            Взносы ОСС: <span id="total_oss_tax"></span><br>
+            Взносы за травматизм: <span id="total_trauma_tax"></span><br>
+            Общая сумма перечислений в государственные органы: <span id="total_tax"></span><br>
+            <i>* Информация для расчётов актуальна на 29 мая 2021</i>
         </div>
     </div>
 </main>
 
+<script>
+    function onOfficialSalaryChange() {
+        var officialSalary = parseInt(document.getElementById("official_salary").value);
+        document.getElementById("revenue").value = Math.round(officialSalary * 0.87);
+        recalculate();
+    }
+
+
+    function onRevenueChange() {
+        var revenue = parseInt(document.getElementById("revenue").value);
+        document.getElementById("official_salary").value = Math.round(revenue * 1.13);
+        recalculate();
+    }
+
+    function onPeriodChange() {
+        recalculate();
+    }
+
+    function recalculate() {
+        var monthCount = parseInt(document.getElementById("period_number").value);
+        if (document.getElementById("period_type").value === "year") {
+            monthCount = monthCount * 12;
+        }
+        var officialSalary = parseInt(document.getElementById("official_salary").value);
+        var minimal = officialSalary <= 12792;
+        var totalOfficialSalary = officialSalary * monthCount;
+        var totalRevenue = parseInt(document.getElementById("revenue").value) * monthCount;
+
+        document.getElementById("total_official_salary").innerText = totalOfficialSalary.toLocaleString();
+        document.getElementById("total_revenue").innerText = totalRevenue.toLocaleString();
+        var ndflTax = Math.round(totalOfficialSalary * 0.13);
+        var opsTax = Math.round(minimal ? totalOfficialSalary * 0.22 : totalOfficialSalary * 0.10);
+        var omsTax = Math.round(minimal ? totalOfficialSalary * 0.051 : totalOfficialSalary * 0.05);
+        var ossTax = Math.round(minimal ? totalOfficialSalary * 0.029 : 0);
+        var traumaTax = Math.round(totalOfficialSalary * 0.03);
+        var totalTax = ndflTax + opsTax + omsTax + ossTax + traumaTax;
+        document.getElementById("total_ndfl_tax").innerText = ndflTax.toLocaleString();
+        document.getElementById("total_ops_tax").innerText = opsTax.toLocaleString();
+        document.getElementById("total_oms_tax").innerText = omsTax.toLocaleString();
+        document.getElementById("total_oss_tax").innerText = ossTax.toLocaleString();
+        document.getElementById("total_trauma_tax").innerText = traumaTax.toLocaleString();
+        document.getElementById("total_tax").innerText = totalTax.toLocaleString();
+    }
+
+    recalculate();
+</script>
+
+<script src="/static/validate.js"></script>
 <script src="/static/bootstrap/5.0.0/js/bootstrap.min.js"></script>
 
 </body>
