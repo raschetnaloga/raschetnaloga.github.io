@@ -8,6 +8,11 @@
     <link rel="stylesheet" href="/static/bootstrap/5.0.0/css/bootstrap.min.css" />
     <link rel="stylesheet" href="/static/bootstrap-icons/1.4.1/font/bootstrap-icons.css" />
 
+    <meta property="og:title" content="Налоговый калькулятор"/>
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://raschetnaloga.github.io/calculator-1200x800.jpeg" />
+    <meta property="og:url" content="https://raschetnaloga.github.io/">
+
 </head>
 <body>
 
@@ -84,6 +89,13 @@
         recalculate();
     }
 
+
+    function toAmount(value) {
+        // return Number(value.toFixed(2));
+        return Math.round(value * 100) / 100;
+    }
+
+
     function recalculate() {
         var monthCount = parseInt(document.getElementById("period_number").value);
         if (document.getElementById("period_type").value === "year") {
@@ -96,11 +108,11 @@
 
         document.getElementById("total_official_salary").innerText = totalOfficialSalary.toLocaleString();
         document.getElementById("total_revenue").innerText = totalRevenue.toLocaleString();
-        var ndflTax = Math.round(totalOfficialSalary * 0.13);
-        var opsTax = Math.round(minimal ? totalOfficialSalary * 0.22 : totalOfficialSalary * 0.10);
-        var omsTax = Math.round(minimal ? totalOfficialSalary * 0.051 : totalOfficialSalary * 0.05);
-        var ossTax = Math.round(minimal ? totalOfficialSalary * 0.029 : 0);
-        var traumaTax = Math.round(totalOfficialSalary * 0.03);
+        var ndflTax = toAmount(totalOfficialSalary * 0.13);
+        var opsTax = toAmount(minimal ? totalOfficialSalary * 0.22 : totalOfficialSalary * 0.10);
+        var omsTax = toAmount(minimal ? totalOfficialSalary * 0.051 : totalOfficialSalary * 0.05);
+        var ossTax = toAmount(minimal ? totalOfficialSalary * 0.029 : 0);
+        var traumaTax = toAmount(totalOfficialSalary * 0.03);
         var totalTax = ndflTax + opsTax + omsTax + ossTax + traumaTax;
         document.getElementById("total_ndfl_tax").innerText = ndflTax.toLocaleString();
         document.getElementById("total_ops_tax").innerText = opsTax.toLocaleString();
