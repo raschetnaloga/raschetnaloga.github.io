@@ -16,60 +16,94 @@
 </head>
 <body>
 
-<main>
-    <div class="d-flex justify-content-between align-items-center">
-        <div class="p-2">
-            <h3>Расчёт выплат в государственные органы при фиксированной ежемесячной оплате труда</h3>
+<div class="container">
+    <main>
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="p-2">
+                <h3>Расчёт выплат в государственные органы при фиксированной ежемесячной оплате труда</h3>
+            </div>
+            <div class="p-2">
+                <span class="text-secondary">бета</span>
+            </div>
         </div>
-        <div class="p-2">
-            <span class="text-secondary">бета</span>
-        </div>
-    </div>
 
-    <form class="needs-validation" novalidate>
-        <div class="mb-3">
-            <label class="form-label" for="official_salary">Сумма официальной зарплаты (р.)</label>
-            <input class="form-control" type="number" id="official_salary" min="1" value="0" onkeyup="onOfficialSalaryChange()">
-            <div class="invalid-feedback">
-                Введите число больше 0
-            </div>
-        </div>
-        <div class="mb-3">
-            <label class="form-label" for="revenue">Реальный доход (р.)</label>
-            <input class="form-control" type="number" id="revenue" min="1" value="0" onkeyup="onRevenueChange()">
-            <div class="invalid-feedback">
-                Введите число больше 0
-            </div>
-        </div>
-        <div class="mb-3">
-            <label class="form-label" for="period_number">Период</label>
-            <div class="row">
-                <div class="col-sm-2">
-                    <input class="form-control" type="number" id="period_number" value="1" onkeyup="onPeriodChange()">
-                </div>
-                <div class="col-sm-5">
-                    <select class="form-select" id="period_type" onchange="onPeriodChange()">
-                        <option value="month" selected>Месяц</option>
-                        <option value="year">Год</option>
-                    </select>
+        <form class="needs-validation" novalidate>
+            <div class="mb-3">
+                <label class="form-label" for="official_salary">Сумма официальной зарплаты (р.)</label>
+                <input class="form-control" type="number" id="official_salary" min="1" value="0" onkeyup="onOfficialSalaryChange()">
+                <div class="invalid-feedback">
+                    Введите число больше 0
                 </div>
             </div>
+            <div class="mb-3">
+                <label class="form-label" for="revenue">Реальный доход (р.)</label>
+                <input class="form-control" type="number" id="revenue" min="1" value="0" onkeyup="onRevenueChange()">
+                <div class="invalid-feedback">
+                    Введите число больше 0
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="period_number">Период</label>
+                <div class="row">
+                    <div class="col-sm-2">
+                        <input class="form-control" type="number" id="period_number" value="1" onkeyup="onPeriodChange()">
+                    </div>
+                    <div class="col-sm-5">
+                        <select class="form-select" id="period_type" onchange="onPeriodChange()">
+                            <option value="month" selected>Месяц</option>
+                            <option value="year">Год</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <div class="card">
+            <div class="card-body">
+                Официальная зарплата: <span id="total_official_salary"></span><br>
+                Реальный доход: <span id="total_revenue"></span><br>
+                Сумма подоходного налога (НДФЛ): <span id="total_ndfl_tax"></span>
+                <a href="#hintNdfl" data-bs-toggle="collapse">
+                    <span class="bi bi-question-circle"></span>
+                </a><br>
+                <div class="collapse" id="hintNdfl">
+                    <div class="alert alert-primary" role="alert">
+                        НДФЛ - налог на доход физических лиц
+                    </div>
+                </div>
+                Взносы ОПС: <span id="total_ops_tax"></span>
+                <a href="#hintOps" data-bs-toggle="collapse">
+                    <span class="bi bi-question-circle"></span>
+                </a><br>
+                <div class="collapse" id="hintOps">
+                    <div class="alert alert-primary" role="alert">
+                        ОПС - обязательное пенсионное страхование
+                    </div>
+                </div>
+                Взносы ОМС: <span id="total_oms_tax"></span>
+                <a href="#hintOms" data-bs-toggle="collapse">
+                    <span class="bi bi-question-circle"></span>
+                </a><br>
+                <div class="collapse" id="hintOms">
+                    <div class="alert alert-primary" role="alert">
+                        ОМС - обязательное медицинское страхование
+                    </div>
+                </div>
+                Взносы ОСС: <span id="total_oss_tax"></span>
+                <a href="#hintOss" data-bs-toggle="collapse">
+                    <span class="bi bi-question-circle"></span>
+                </a><br>
+                <div class="collapse" id="hintOss">
+                    <div class="alert alert-primary" role="alert">
+                        ОСС - обязательное социальное страхование на случай временной нетрудоспособности и в связи с материнством
+                    </div>
+                </div>
+                Взносы за травматизм: <span id="total_trauma_tax"></span><br>
+                Общая сумма перечислений в государственные органы: <span id="total_tax"></span><br>
+                <i>* Информация для расчётов актуальна на 29 мая 2021</i>
+            </div>
         </div>
-    </form>
-    <div class="card">
-        <div class="card-body">
-            Официальная зарплата: <span id="total_official_salary"></span><br>
-            Реальный доход: <span id="total_revenue"></span><br>
-            Сумма подоходного налога (НДФЛ): <span id="total_ndfl_tax"></span><br>
-            Взносы ОПС: <span id="total_ops_tax"></span><br>
-            Взносы ОМС: <span id="total_oms_tax"></span><br>
-            Взносы ОСС: <span id="total_oss_tax"></span><br>
-            Взносы за травматизм: <span id="total_trauma_tax"></span><br>
-            Общая сумма перечислений в государственные органы: <span id="total_tax"></span><br>
-            <i>* Информация для расчётов актуальна на 29 мая 2021</i>
-        </div>
-    </div>
-</main>
+    </main>
+</div>
 
 <script>
     function onOfficialSalaryChange() {
