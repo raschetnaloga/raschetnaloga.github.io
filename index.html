@@ -30,14 +30,14 @@
 
         <form class="needs-validation" novalidate>
             <div class="mb-3">
-                <label class="form-label" for="official_salary">Сумма официальной зарплаты (р.)</label>
+                <label class="form-label" for="official_salary">Оклад, согласно трудовому договору (р.)</label>
                 <input class="form-control" type="number" id="official_salary" min="1" value="0" onkeyup="onOfficialSalaryChange()">
                 <div class="invalid-feedback">
                     Введите число больше 0
                 </div>
             </div>
             <div class="mb-3">
-                <label class="form-label" for="revenue">Реальный доход (р.)</label>
+                <label class="form-label" for="revenue">Реальный доход, получаемый на руки (р.)</label>
                 <input class="form-control" type="number" id="revenue" min="1" value="0" onkeyup="onRevenueChange()">
                 <div class="invalid-feedback">
                     Введите число больше 0
@@ -60,8 +60,8 @@
         </form>
         <div class="card">
             <div class="card-body">
-                Официальная зарплата: <span id="total_official_salary"></span><br>
-                Реальный доход: <span id="total_revenue"></span><br>
+                Оклад (по договору): <span id="total_official_salary"></span><br>
+                Реальный доход (на руки): <span id="total_revenue"></span><br>
                 Сумма подоходного налога (НДФЛ): <span id="total_ndfl_tax"></span>
                 <a href="#hintNdfl" data-bs-toggle="collapse">
                     <span class="bi bi-question-circle"></span>
@@ -100,6 +100,7 @@
                 </div>
                 Взносы за травматизм: <span id="total_trauma_tax"></span><br>
                 Общая сумма перечислений в государственные органы: <span id="total_tax"></span><br>
+                Суммарные расходы работодателя: <span id="total_company_spending"></span><br>
                 <i>* Информация для расчётов актуальна на 29 мая 2021</i>
             </div>
         </div>
@@ -109,14 +110,14 @@
 <script>
     function onOfficialSalaryChange() {
         var officialSalary = parseInt(document.getElementById("official_salary").value);
-        document.getElementById("revenue").value = Math.round(officialSalary * 0.87);
+        document.getElementById("revenue").value = Math.round(officialSalary * 87 / 100);
         recalculate();
     }
 
 
     function onRevenueChange() {
         var revenue = parseInt(document.getElementById("revenue").value);
-        document.getElementById("official_salary").value = Math.round(revenue * 1.13);
+        document.getElementById("official_salary").value = Math.round(revenue * 100 / 87);
         recalculate();
     }
 
@@ -149,12 +150,14 @@
         var ossTax = toAmount(minimal ? totalOfficialSalary * 0.029 : 0);
         var traumaTax = toAmount(totalOfficialSalary * 0.03);
         var totalTax = ndflTax + opsTax + omsTax + ossTax + traumaTax;
+        var totalCompanySpending = totalRevenue + totalTax;
         document.getElementById("total_ndfl_tax").innerText = ndflTax.toLocaleString();
         document.getElementById("total_ops_tax").innerText = opsTax.toLocaleString();
         document.getElementById("total_oms_tax").innerText = omsTax.toLocaleString();
         document.getElementById("total_oss_tax").innerText = ossTax.toLocaleString();
         document.getElementById("total_trauma_tax").innerText = traumaTax.toLocaleString();
         document.getElementById("total_tax").innerText = totalTax.toLocaleString();
+        document.getElementById("total_company_spending").innerText = totalCompanySpending.toLocaleString();
     }
 
     recalculate();
